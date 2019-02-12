@@ -47,6 +47,7 @@
   },
   "dependencies": {
     "@babel/polyfill": "^7.0.0",
-    "leaflet": "^1.4.0"
+    "esri-leaflet": "^2.2.3",
+    "esri-leaflet-geocoder": "^2.2.13"
   }
 }

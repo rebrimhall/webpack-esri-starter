@@ -1,22 +1,36 @@
-import L from 'leaflet';
-import 'leaflet/dist/leaflet.css';
-/* This code is needed to properly load the images in the Leaflet CSS */
-delete L.Icon.Default.prototype._getIconUrl;
-L.Icon.Default.mergeOptions({
-  iconRetinaUrl: require('leaflet/dist/images/marker-icon-2x.png'),
-  iconUrl: require('leaflet/dist/images/marker-icon.png'),
-  shadowUrl: require('leaflet/dist/images/marker-shadow.png'),
-});
+import { map } from 'leaflet';
 
-const map = L.map('map');
-const defaultCenter = [35.12, -89.98];
-const defaultZoom = 15;
-const basemap = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}', {
-  attribution: 'Tiles &copy; Esri &mdash; Esri, DeLorme, NAVTEQ, TomTom, Intermap, iPC, USGS, FAO, NPS, NRCAN, GeoBase, Kadaster NL, Ordnance Survey, Esri Japan, METI, Esri China (Hong Kong), and the GIS User Community'
-});
-const marker = L.marker(defaultCenter);
+import { basemapLayer, featureLayer } from 'esri-leaflet';
 
-map.setView(defaultCenter, defaultZoom);
+import {
+  geosearch,
+  arcgisOnlineProvider,
+  featureLayerProvider
+} from 'esri-leaflet-geocoder';
 
-basemap.addTo(map);
-marker.addTo(map);
+// create map
+const ourMap = map('map').setView([35.12, -89.98], 6);
+
+// add basemap
+basemapLayer('Oceans').addTo(ourMap);
+
+// add layer
+featureLayer({
+  url: 'https://services.arcgis.com/uCXeTVveQzP4IIcx/arcgis/rest/services/gisday/FeatureServer/0/'
+}).addTo(ourMap);
+
+// add search control
+geosearch({
+  providers: [
+    arcgisOnlineProvider(),
+    featureLayerProvider({
+      url: 'https://services.arcgis.com/uCXeTVveQzP4IIcx/arcgis/rest/services/gisday/FeatureServer/0/',
+      searchFields: ['Name', 'Organization'],
+      label: 'GIS Day Events',
+      bufferRadius: 20000,
+      formatSuggestion: function (feature) {
+        return feature.properties.Name + ' - ' + feature.properties.Organization;
+      }
+    })
+  ]
+}).addTo(ourMap);
