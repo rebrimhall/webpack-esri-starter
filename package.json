@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/wbkd/webpack-starter.git"
+    "url": "git+https://github.com/rebrimhall/webpack-leaflet-starter.git"
   },
   "keywords": [
     "webpack",
