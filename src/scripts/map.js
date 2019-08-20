@@ -1,36 +1,44 @@
-import { map } from 'leaflet';
+import { loadModules } from 'esri-loader';
+import { loadCss } from 'esri-loader';
 
-import { basemapLayer, featureLayer } from 'esri-leaflet';
+// if the API hasn't already been loaded (i.e. the frist time this is run)
+// loadModules() will call loadScript() and pass these options, which,
+// in this case are only needed b/c we're using v3.x instead of the latest 4.x
+const options = { version: '3.28' };
+loadCss('3.28');
 
-import {
-  geosearch,
-  arcgisOnlineProvider,
-  featureLayerProvider
-} from 'esri-leaflet-geocoder';
+loadModules(['esri/map', 'esri/geometry/Extent'], options)
+  .then(([Map, Extent]) => {
+    const wkid = 3857;
 
-// create map
-const ourMap = map('map').setView([35.12, -89.98], 6);
+    const USExtent = new Extent({
+      xmin: -15670101.409658078,
 
-// add basemap
-basemapLayer('Oceans').addTo(ourMap);
+      xmax: -6277519.373978118,
 
-// add layer
-featureLayer({
-  url: 'https://services.arcgis.com/uCXeTVveQzP4IIcx/arcgis/rest/services/gisday/FeatureServer/0/'
-}).addTo(ourMap);
+      ymin: 3119053.269508996,
 
-// add search control
-geosearch({
-  providers: [
-    arcgisOnlineProvider(),
-    featureLayerProvider({
-      url: 'https://services.arcgis.com/uCXeTVveQzP4IIcx/arcgis/rest/services/gisday/FeatureServer/0/',
-      searchFields: ['Name', 'Organization'],
-      label: 'GIS Day Events',
-      bufferRadius: 20000,
-      formatSuggestion: function (feature) {
-        return feature.properties.Name + ' - ' + feature.properties.Organization;
+      ymax: 6563000.015924982,
+
+      spatialReference: {
+        wkid: wkid
       }
-    })
-  ]
-}).addTo(ourMap);
+    });
+    // create map with the given options at a DOM node w/ id 'mapNode'
+    let map = new Map('mapNode', {
+      sliderPosition: 'top-right',
+      basemap: 'streets',
+      center: [-98.579416, 39.828328],
+      zoom: 5,
+      scrollWheelZoom: true,
+      sliderPosition: 'top-right',
+      logo: false,
+      isKeyboardNavigation: false,
+      navigationMode: 'css-transforms',
+      extent: USExtent
+    });
+  })
+  .catch(err => {
+    // handle any script or module loading errors
+    console.error(err);
+  });
