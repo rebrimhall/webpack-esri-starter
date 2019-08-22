@@ -1,4 +1,4 @@
-# Webpack Frontend Starterkit
+# Webpack/Esri Frontend Starterkit
 
 A lightweight foundation for your next webpack based frontend project with Esri jsapi.
 
