@@ -39,7 +39,7 @@ loadModules(['esri/map', 'esri/geometry/Extent'], options)
     });
 
     /*fetch(
-      'https://eagnmnmedb1c:6443/arcgis/rest/services/USPS/USPS_GAS_STATIONS/MapServer/0/query?where=REV_ZIP=38632&outFields=*&f=pjson'
+      'urlhere'
     )
       .then(response => response.json())
       .then(data => console.log(data));*/
